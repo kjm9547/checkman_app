@@ -15,9 +15,9 @@ const SignupPwFunnel = ({ formData, setFormData, next }: SignupStepProps) => {
       <TextInput
         label="pw"
         mode="outlined"
-        textContentType="emailAddress"
-        value={formData.nickname}
-        onChangeText={(text) => formInputHandler("nickname", text)}
+        textContentType="password"
+        value={formData.pw}
+        onChangeText={(text) => formInputHandler("pw", text)}
       />
       <View className="mt-2">
         <Button

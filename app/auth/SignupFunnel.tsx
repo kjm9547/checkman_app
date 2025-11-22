@@ -4,15 +4,15 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SignupStepProps } from "../types/auth";
 import SignupEmailAuthFunnel from "./funnels/SignupEmailAuthFunnel";
-import SignupEmailImputFunnel from "./funnels/SignupEmailInputFunnel";
+import SignupEmailInputFunnel from "./funnels/SignupEmailInputFunnel";
 import SignupNicknameFunnel from "./funnels/SignupNicknameFunnel";
 import SignupPwFunnel from "./funnels/SignupPwFunnel";
 import SignupSuccessFunnel from "./funnels/SignupSuccessFunnel";
 
 const SignupFunnel = () => {
   const { StepComponent, next } = useFunnel([
+    SignupEmailInputFunnel,
     SignupEmailAuthFunnel,
-    SignupEmailImputFunnel,
     SignupPwFunnel,
     SignupNicknameFunnel,
     SignupSuccessFunnel,
@@ -20,9 +20,9 @@ const SignupFunnel = () => {
   const [formData, setFormData] = useState<SignupStepProps["formData"]>({
     email: "",
     emailAuth: "",
-    nickname: "",
-    password: "",
-    passwordCheck: "",
+    nickName: "",
+    pw: "",
+    pwCheck: "",
   });
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.primary500 }}>

@@ -3,7 +3,7 @@ import { Colors } from "@/constants/theme";
 import { Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
-const SignupEmailImputFunnel = ({
+const SignupEmailInputFunnel = ({
   formData,
   setFormData,
   next,
@@ -20,8 +20,8 @@ const SignupEmailImputFunnel = ({
         label="Email"
         mode="outlined"
         textContentType="emailAddress"
-        value={formData.emailAuth}
-        onChangeText={(text) => formInputHandler("emailAuth", text)}
+        value={formData.email}
+        onChangeText={(text) => formInputHandler("email", text)}
       />
       <View className="mt-2">
         <Button
@@ -37,4 +37,4 @@ const SignupEmailImputFunnel = ({
   );
 };
 
-export default SignupEmailImputFunnel;
+export default SignupEmailInputFunnel;

@@ -1,11 +1,17 @@
 import { Colors } from "@/constants/theme";
+import { useAuthStore } from "@/store/useAuthStore";
 import axios from "axios";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 const LandView = () => {
+  const authStore = useAuthStore();
+
+  useEffect(() => {
+    console.log("update store", authStore.userInfo);
+  }, [authStore]);
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
@@ -18,6 +24,7 @@ const LandView = () => {
     });
     if (res.status === 201) {
       router.push("/(tabs)/explore");
+      authStore.setUserInfo(res.data);
       console.log("로그인한 유저의 정보입니다.", res.data);
     } else {
       console.log("로그인에 실패하였습니다.", res.data);

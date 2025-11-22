@@ -3,9 +3,17 @@ export type SignupStepProps = {
   formData: {
     email: string;
     emailAuth: string;
-    password: string;
-    passwordCheck: string;
-    nickname: string;
+    pw: string;
+    pwCheck: string;
+    nickName: string;
   };
   setFormData: React.Dispatch<React.SetStateAction<any>>;
+};
+
+export type userInfoProps = {
+  id?: number;
+  email?: string;
+  nickName?: string;
+  type?: string;
+  imgUrl?: string;
 };

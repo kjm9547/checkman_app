@@ -20,8 +20,8 @@ const SignupEmailAuthFunnel = ({
         label="Email"
         mode="outlined"
         textContentType="emailAddress"
-        value={formData.email}
-        onChangeText={(text) => formInputHandler("email", text)}
+        value={formData.emailAuth}
+        onChangeText={(text) => formInputHandler("emailAuth", text)}
       />
       <View className="mt-2">
         <Button

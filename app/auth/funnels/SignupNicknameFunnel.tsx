@@ -1,5 +1,6 @@
 import { SignupStepProps } from "@/app/types/auth";
 import { Colors } from "@/constants/theme";
+import axios from "axios";
 import { Text, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 
@@ -8,6 +9,20 @@ const SignupNicknameFunnel = ({
   setFormData,
   next,
 }: SignupStepProps) => {
+  const submitClickHandler = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:3000/user/signup",
+        formData
+      );
+      if (res.status === 201) {
+        next();
+      }
+      return;
+    } catch (e) {
+      console.log(e);
+    }
+  };
   const formInputHandler = (type: string, text: string) => {
     setFormData({ ...formData, [type]: text });
   };
@@ -17,18 +32,18 @@ const SignupNicknameFunnel = ({
         닉네임을 입력해주세요.
       </Text>
       <TextInput
-        label="nickname"
+        label="nickName"
         mode="outlined"
-        textContentType="emailAddress"
-        value={formData.nickname}
-        onChangeText={(text) => formInputHandler("nickname", text)}
+        textContentType="nickname"
+        value={formData.nickName}
+        onChangeText={(text) => formInputHandler("nickName", text)}
       />
       <View className="mt-2">
         <Button
           mode="contained"
           buttonColor={Colors.light.black500}
           textColor="white"
-          onPress={next}
+          onPress={submitClickHandler}
         >
           확인
         </Button>
