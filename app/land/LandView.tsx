@@ -38,6 +38,9 @@ const LandView = () => {
   const signupClickHandler = () => {
     router.push("/auth/SignupFunnel");
   };
+  const testClickHandler = () => {
+    router.push("/(tabs)/explore");
+  };
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.primary500 }}>
       <View style={stlyes.constainer}>
@@ -68,6 +71,11 @@ const LandView = () => {
           <TouchableOpacity onPress={signupClickHandler}>
             <Text className="mt-4 w-auto color-[#262626] self-center">
               아직 계정이 없으신가요?
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={testClickHandler}>
+            <Text className="mt-4 w-auto color-[#262626] self-center">
+              테스트 메인 이동 버튼
             </Text>
           </TouchableOpacity>
         </View>
