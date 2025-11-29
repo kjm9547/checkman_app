@@ -1,34 +1,24 @@
+import { lotties } from "@/constants/assets";
 import { Colors } from "@/constants/theme";
-import { useAuthStore } from "@/store/useAuthStore";
-import axios from "axios";
+import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import LottieView from "lottie-react-native";
+import { useRef, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
-const LandView = () => {
-  const authStore = useAuthStore();
 
-  useEffect(() => {
-    console.log("update store", authStore.userInfo);
-  }, [authStore]);
+const LandView = () => {
+  const animation = useRef<LottieView>(null);
+  const { loginUser } = useAuth();
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     pw: "",
   });
   const loginClickHandler = async () => {
-    const res = await axios.post("http://localhost:3000/user/signin", {
-      email: formData.email,
-      pw: formData.pw,
-    });
-    if (res.status === 201) {
-      router.push("/(tabs)/explore");
-      authStore.setUserInfo(res.data);
-      console.log("로그인한 유저의 정보입니다.", res.data);
-    } else {
-      console.log("로그인에 실패하였습니다.", res.data);
-    }
+    await loginUser(formData);
+    router.push("/(tabs)/explore");
   };
 
   const formInputHandler = (type: string, text: string) => {
@@ -45,6 +35,16 @@ const LandView = () => {
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.light.primary500 }}>
       <View style={stlyes.constainer}>
         <Text style={stlyes.title}>CHECK MAN</Text>
+        <LottieView
+          autoPlay
+          ref={animation}
+          style={{
+            width: "80%",
+            height: "50%",
+          }}
+          // Find more Lottie files at https://lottiefiles.com/featured
+          source={{ uri: lotties.checkman }}
+        />
         <View style={stlyes.input_container}>
           <TextInput
             label="Email"

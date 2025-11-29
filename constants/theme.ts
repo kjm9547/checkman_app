@@ -10,7 +10,17 @@ const tintColorDark = "#fff";
 
 export const Colors = {
   light: {
+    primary50: "#E6F7EC",
+    primary100: "#C1EBCF",
+    primary200: "#97DDB0",
+    primary300: "#6DCF91",
+    primary400: "#4BC678",
     primary500: "#009951",
+    primary600: "#008A49",
+    primary700: "#007A3F",
+    primary800: "#006A35",
+    primary900: "#004D25",
+    blackText: "#303030",
     black500: "#303030",
     text: "#11181C",
     background: "#fff",
