@@ -28,7 +28,7 @@ export const useAuth = () => {
         },
       });
       if (res.status === 200) {
-        authStore.setUserInfo(res.data);
+        authStore.setUserInfo({ ...res.data, token });
         router.push("/(tabs)/explore");
       }
     }

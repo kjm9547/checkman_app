@@ -1,74 +1,148 @@
-import { Colors } from "@/constants/theme";
+import { dateToYYYYMMDD } from "@/util/format";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { Chip } from "react-native-paper";
-const CheckListDateSelector = () => {
-  const [text, setText] = useState("");
-  const [open, setOpen] = useState(false);
-  const [selectedPeriodIndex, setSelectedPeriodIndex] = useState<number>(0);
-  const items = [1, 3, 7, 14];
-  const chipClickHandler = (item: number) => {
-    const index = items.indexOf(item);
-    setSelectedPeriodIndex(index);
-    setText(items[index].toString());
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useEffect, useState } from "react";
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+const CheckListDateSelector = ({ formData, setFormData }: any) => {
+  const [showDatePicker, setShowDatePicker] = useState<{
+    type: "start" | "end" | null;
+  }>({
+    type: null,
+  });
+  const dateChangeHandler = (date: Date | undefined, type: string) => {
+    setFormData((prev: any) => ({
+      ...prev,
+      [type]: dateToYYYYMMDD(date),
+    }));
   };
+  useEffect(() => {
+    const startDate = new Date(formData.start);
+    const endDate = new Date(formData.end);
+    const diffInMs = endDate.getTime() - startDate.getTime();
+    const diffInDays = Math.ceil(diffInMs / (1000 * 60 * 60 * 24)); // 일 단위 차이 계산
+    setFormData((prev: any) => ({
+      ...prev,
+      target_period: diffInDays.toString(),
+    }));
+  }, [formData.start, formData.end]);
   return (
-    <View>
-      <Text className="font-bold text-lg">체크 주기를 입력해주세요.</Text>
-      <Text className="font-semibold text-sm color-gray-500 mb-4">
-        <MaterialIcons name="info-outline" />
-        일정 기간마다 알림으로 체크해드립니다.
-      </Text>
-      <View style={styles.chipContainer}>
-        {items.map((item, index) => (
-          <Chip
-            onPress={() => chipClickHandler(item)}
-            showSelectedCheck={false}
-            showSelectedOverlay={true}
-            selected={selectedPeriodIndex === index}
-            key={`period_key_${index}`}
-            style={{
-              maxWidth: 80,
-              height: 32,
-              marginBottom: 8,
-              borderWidth: 1,
-              borderColor:
-                selectedPeriodIndex === index
-                  ? Colors.light.primary500
-                  : "#ccc", // 기본 테두리 색상
-              backgroundColor:
-                selectedPeriodIndex === index
-                  ? Colors.light.primary300
-                  : "white", // 기본 배경색
-            }}
-            textStyle={{}}
-          >{`${item}일`}</Chip>
-        ))}
+    <View className="mb-4">
+      {showDatePicker && (
+        <Pressable
+          onPress={() => setShowDatePicker({ type: null })}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            width: "100%",
+            height: "100%",
+          }}
+        />
+      )}
+      <Text className="font-bold text-lg">몇 일 동안 체크할까요</Text>
+      <View className="flex-row items-center gap-1 mb-4 align-middle">
+        <MaterialIcons name="info-outline" size={14} />
+        <Text className="font-semibold text-sm color-gray-500">
+          시작일과 종료일을 통해 목표 기간을 설정해주세요.
+        </Text>
       </View>
+      <View className="relative flex-row  items-center mb-4">
+        <Text className="w-[20%]">시작일</Text>
+        <TouchableOpacity
+          className="flex-row h-8 gap-1 pl-2 pr-2 border-[0.5px] border-stone-200 items-center align-middle"
+          onPress={() => setShowDatePicker({ type: "start" })}
+        >
+          <Text>{formData.start}</Text>
+          <MaterialIcons
+            name="calendar-today"
+            size={12}
+            color="black"
+            className="self-center"
+          />
+        </TouchableOpacity>
+      </View>
+      <View className="relative flex-row  items-center mb-4">
+        <Text className="w-[20%]">종료일</Text>
+        <TouchableOpacity
+          className="flex-row h-8 gap-1 pl-2 pr-2 border-[0.5px] border-stone-200 items-center align-middle"
+          onPress={() => setShowDatePicker({ type: "end" })}
+        >
+          <Text>{formData.end}</Text>
+          <MaterialIcons
+            name="calendar-today"
+            size={12}
+            className="self-center"
+          />
+        </TouchableOpacity>
+      </View>
+
       <View className="flex flex-row items-center text-lg">
         <TextInput
+          placeholder="period"
+          value={formData.target_period}
           style={styles.dateInput}
-          placeholder="직접 입력"
-          keyboardType="number-pad"
-          value={text}
-          onChangeText={(text) => setText(text)}
+          // onChangeText={(text) => setFormData("title", text)}
         />
-        <Text className="ml-2 text-sm font-semibold">일 마다 체크합니다.</Text>
+        <Text className="ml-2 text-sm font-semibold">일 동안 체크합니다.</Text>
       </View>
+      {showDatePicker.type &&
+        (Platform.OS === "ios" ? (
+          <View style={styles.calendar}>
+            <DateTimePicker
+              mode="date"
+              display="inline"
+              value={new Date(formData[showDatePicker.type] || Date.now())}
+              minimumDate={
+                new Date(formData[showDatePicker.type] || Date.now())
+              }
+              onChange={(_, date) =>
+                dateChangeHandler(date, showDatePicker.type!)
+              }
+            />
+          </View>
+        ) : (
+          <DateTimePicker
+            mode="date"
+            display="default"
+            value={new Date(formData[showDatePicker.type] || Date.now())}
+            minimumDate={new Date(formData[showDatePicker.type] || Date.now())}
+            onChange={(_, date) =>
+              dateChangeHandler(date, showDatePicker.type!)
+            }
+          />
+        ))}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  chipContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 4,
+  calendar: {
+    position: "absolute",
+    top: 30,
+    left: 20,
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 8,
+    elevation: 5,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    zIndex: 1000,
   },
   dateInput: {
     width: "20%",
-    height: 40,
+    height: 30,
     backgroundColor: "white",
     borderColor: "#ccc",
     borderWidth: 1,

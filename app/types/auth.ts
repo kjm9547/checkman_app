@@ -16,4 +16,5 @@ export type userInfoProps = {
   nickName?: string;
   type?: string;
   imgUrl?: string;
+  token: string;
 };

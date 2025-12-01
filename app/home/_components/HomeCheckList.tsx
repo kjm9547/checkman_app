@@ -1,3 +1,4 @@
+import { useAuthStore } from "@/store/useAuthStore";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import axios from "axios";
 import { useRouter } from "expo-router";
@@ -19,10 +20,14 @@ type createCheckItemType = {
 };
 const HomeCheckList = () => {
   const router = useRouter();
+  const authStore = useAuthStore();
+  const token = authStore.userInfo.token;
   const [checkList, setCheckList] = useState<createCheckItemType[]>([]);
   const getCheckItemList = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/checkitem");
+      const res = await axios.get("http://localhost:3000/checkitem", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (res.status === 200) {
         setCheckList(res.data);
